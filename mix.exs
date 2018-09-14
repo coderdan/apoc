@@ -8,7 +8,14 @@ defmodule Apoc.Mixfile do
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description(),
+      test_coverage: [tool: ExCoveralls],
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ],
     ]
   end
 
@@ -23,11 +30,24 @@ defmodule Apoc.Mixfile do
     ]
   end
 
+  defp description do
+    "Comprehensive Cryptography Library for Elixir"
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+    ]
+  end
+
+  defp package do
+    [
+      files: ~w(lib mix.exs README.md LICENSE.md),
+      links: %{"GitHub" => "https://github.com/coderdan/apoc"},
+      licenses: ["Apache 2.0"],
+      maintainers: ["Dan Draper"],
     ]
   end
 end
