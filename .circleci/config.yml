@@ -7,6 +7,9 @@ jobs:
     docker:
       # specify the version here
       - image: circleci/elixir:1.6
+
+    environment:
+      MIX_ENV=test
       
     working_directory: ~/repo
     steps:
