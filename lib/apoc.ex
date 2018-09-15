@@ -8,6 +8,9 @@ defmodule Apoc do
   def decode(encoded) do
     Base.url_decode64(encoded, padding: false)
   end
+  def decode!(encoded) do
+    Base.url_decode64!(encoded, padding: false)
+  end
 
   @doc "Encodes a binary as a URL safe base 64 string"
   def encode(payload) when is_binary(payload) do

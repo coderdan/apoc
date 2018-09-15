@@ -4,7 +4,7 @@ defmodule Apoc.MAC.HMAC do
   as described in [FIPS PUB 198-1](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.198-1.pdf)
   """
 
-  @opaque key :: iodata()
+  @type key :: binary()
 
   @doc """
   Generate the HMAC signature for the given message
