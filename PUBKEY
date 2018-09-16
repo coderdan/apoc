@@ -12,3 +12,24 @@ pkey = public_key:pem_entry_decode(enc_pkey)
 [enc_skey] = :public_key.pem_decode(priv_pem)
 skey = :public_key.pem_entry_decode(enc_skey)
 :public_key.decrypt_private(ct, skey)
+
+
+Generating keys in erlang
+
+Size = 2048, public modulus 65537
+{pub_key, priv_key} = :crypto.generate_key(:rsa, {2048, 65537})
+
+[n, p] = pub_key
+
+:public_key.pem_entry_encode(:SubjectPublicKeyInfo, {:RSAPublicKey, :crypto.bytes_to_integer(p), :crypto.bytes_to_integer(n)}) |> List.wrap |> :public_key.pem_encode
+
+priv_key |> Enum.map(&:crypto.bytes_to_integer/1)
+
+# TODO: Then get the parameters in the right order to encode in pem format
+
+
+For an ECDH pair:
+
+:crypto.generate_key(:ecdh, :secp256r1)
+
+secp256r1 (or just P256) is required in TLS 1.3 (see BonehShoup 15.3.1)

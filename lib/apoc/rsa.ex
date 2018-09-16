@@ -1,28 +1,59 @@
 defmodule Apoc.RSA do
-  # TODO: Move to a PEM module?
-  def with_pem_key(pem_str) do
-    [enc_pkey] = :public_key.pem_decode(pem_str)
-    :public_key.pem_entry_decode(enc_pkey)
+  alias Apoc.RSA.{PrivateKey, PublicKey}
+  @public_modulus 65537
+
+  def encrypt(%PublicKey{} = pubkey, message) do
+    PublicKey.encrypt(pubkey, message)
+  end
+  def encrypt(%PrivateKey{} = seckey, message) do
+    PrivateKey.encrypt(seckey, message)
   end
 
-  def encrypt({:RSAPublicKey, _n, _p} = pubkey, message) do
-    message
-    |> :public_key.encrypt_public(pubkey)
-    |> Apoc.encode()
+  def decrypt(%PublicKey{} = pubkey, ciphertext) do
+    PublicKey.decrypt(pubkey, ciphertext)
   end
-  def encrypt({:RSAPrivateKey, _, _n, _p, _, _, _, _, _, _, _} = privkey, message) do
-    message
-    |> :public_key.encrypt_private(privkey)
-    |> Apoc.encode()
+  def decrypt(%PrivateKey{} = seckey, ciphertext) do
+    PrivateKey.decrypt(seckey, ciphertext)
   end
 
-  # TODO:Catch exceptions
-  def decrypt({:RSAPublicKey, _n, _p} = pubkey, ciphertext) do
-    with {:ok, ctb} <- Apoc.decode(ciphertext),
-      do: :public_key.decrypt_public(ctb, pubkey)
+  def generate_key_pair(size \\ 2048)
+  def generate_key_pair(size) when size >= 2048 do
+    with {pub, priv} <- :crypto.generate_key(:rsa, {size, @public_modulus}),
+         %PublicKey{} = pkey <- public_key_struct(pub),
+         %PrivateKey{} = skey <- private_key_struct(priv) do
+
+      {:ok, pkey, skey}
+    else
+      _ ->
+        :error
+    end
   end
-  def decrypt({:RSAPrivateKey, _, _n, _p, _, _, _, _, _, _, _} = privkey, ciphertext) do
-    with {:ok, ctb} <- Apoc.decode(ciphertext),
-      do: :public_key.decrypt_private(ctb, privkey)
+  def generate_key_pair(_) do
+    {:error, "Key size should be at least 2048"}
+  end
+
+  defp public_key_struct([e, n]) do
+    %PublicKey{
+      modulus: :crypto.bytes_to_integer(n),
+      public_exponent: :crypto.bytes_to_integer(e)
+    }
+  end
+
+  # TODO: Use from_erlang_type
+  defp private_key_struct(values) do
+    [e, n, d, p1, p2, e1, e2, c] =
+      Enum.map(values, &:crypto.bytes_to_integer/1)
+
+    %PrivateKey{
+      version: :"two-prime",
+      modulus: n,
+      public_exponent: e,
+      private_exponent: d,
+      prime1: p1,
+      prime2: p2,
+      exponent1: e1,
+      exponent2: e2,
+      coefficient: c
+    }
   end
 end
