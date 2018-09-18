@@ -12,9 +12,12 @@ defmodule Apoc.Mixfile do
       package: package(),
       description: description(),
       test_coverage: [tool: ExCoveralls],
+      source_url: "https://github.com/coderdan/apoc",
+      homepage_url: "https://hexdocs.pm/apoc",
       docs: [
         main: "readme",
-        extras: ["README.md"]
+        extras: ["README.md"],
+        groups_for_modules: module_groups()
       ],
     ]
   end
@@ -50,6 +53,28 @@ defmodule Apoc.Mixfile do
       links: %{"GitHub" => "https://github.com/coderdan/apoc"},
       licenses: ["Apache 2.0"],
       maintainers: ["Dan Draper"],
+    ]
+  end
+
+  defp module_groups do
+    [
+      "AES": [
+        Apoc.AES
+      ],
+      "Hashes": [
+        Apoc.Hash,
+      ],
+      "Key Derivation": [
+        Apoc.KDF.HKDF,
+      ],
+      "Message Authenticated Codes": [
+        Apoc.MAC.HMAC,
+      ],
+      "RSA": [
+        Apoc.RSA,
+        Apoc.RSA.PublicKey,
+        Apoc.RSA.PrivateKey,
+      ]
     ]
   end
 end
