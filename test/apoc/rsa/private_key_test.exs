@@ -27,5 +27,10 @@ defmodule ApocTest.RSA.PrivateKeyTest do
       {:ok, skey} = PrivateKey.load_pem(pemstr)
       assert PrivateKey.dump_pem(skey) == pemstr
     end
+
+    test "dumping a self generated key works" do
+      {:ok, _, skey} = Apoc.RSA.generate_key_pair
+      assert PrivateKey.dump_pem(skey)
+    end
   end
 end
