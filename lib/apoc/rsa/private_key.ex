@@ -147,7 +147,7 @@ defmodule Apoc.RSA.PrivateKey do
       key.exponent1,
       key.exponent2,
       key.coefficient,
-      key.other_prime_info
+      :asn1_NOVALUE
     }
 
     :RSAPrivateKey
