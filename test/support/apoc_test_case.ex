@@ -1,7 +1,7 @@
 defmodule ApocTest.Case do
   use ExUnit.CaseTemplate
 
-  defmacro __using__(_) do
+  using do
     quote do
       use ExUnit.Case, async: false
 

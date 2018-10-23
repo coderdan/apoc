@@ -1,10 +1,12 @@
 defmodule Apoc.Mixfile do
   use Mix.Project
 
+  @version "0.1.2"
+
   def project do
     [
       app: :apoc,
-      version: "0.1.2",
+      version: @version,
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env == :prod,
@@ -15,8 +17,11 @@ defmodule Apoc.Mixfile do
       source_url: "https://github.com/coderdan/apoc",
       homepage_url: "https://hexdocs.pm/apoc",
       docs: [
-        main: "readme",
-        extras: ["README.md"],
+        main: "Apoc",
+        source_ref: "v#{@version}",
+        canonical: "http://hexdocs.pm/apoc",
+        source_url: "https://github.com/coderdan/apoc",
+        extras: [], # TODO: Some Guides?
         groups_for_modules: module_groups()
       ],
     ]
@@ -44,6 +49,7 @@ defmodule Apoc.Mixfile do
       {:excoveralls, "~> 0.9.1", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:stream_data, "~> 0.4.2", only: :test},
     ]
   end
 
@@ -63,6 +69,11 @@ defmodule Apoc.Mixfile do
       ],
       "Hashes": [
         Apoc.Hash,
+        Apoc.Hash.SHA,
+        Apoc.Hash.SHA224,
+        Apoc.Hash.SHA256,
+        Apoc.Hash.SHA384,
+        Apoc.Hash.SHA512,
       ],
       "Key Derivation": [
         Apoc.KDF.HKDF,
