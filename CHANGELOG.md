@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.0 2018-10-23
+
+* Implemented behaviour for Hash functions
+* Removed MD5
+
 ## v0.1.2 2018-09-18
 
 * Fixed bug when dumping an RSA Private Key to PEM
