@@ -1,4 +1,4 @@
-defmodule Apoc.AES do
+defmodule Apoc.Hazmat.AEAD.AESGCM do
   @moduledoc """
   Implementation of the AES block encryption
   standard as per [FIPS PUB 197](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf).
@@ -56,15 +56,35 @@ defmodule Apoc.AES do
   Apoc.encode(k) # => base 64 encoded for storage somewhere safe
   ```
   """
+  # TODO: Optional additional AD
   @spec encrypt(String.t, aes_key) :: binary
-  def encrypt(msg, key) when is_key_of_size(key, 16) do
+  def encrypt(msg, key) when is_binary(msg) and is_key_of_size(key, 16) do
     do_encrypt(msg, "AES128GCM", key)
   end
-  def encrypt(msg, key) when is_key_of_size(key, 24) do
+
+  def encrypt(msg, key) when is_binary(msg) and is_key_of_size(key, 24) do
     do_encrypt(msg, "AES192GCM", key)
   end
-  def encrypt(msg, key) when is_key_of_size(key, 32) do
+
+  def encrypt(msg, key) when is_binary(msg) and is_key_of_size(key, 32) do
     do_encrypt(msg, "AES256GCM", key)
+  end
+
+  def encrypt(x, _) when not is_binary(x) do
+    {:error, "Message must be a binary"}
+  end
+
+  def encrypt(_, _) do
+    {:error, "Invalid key size"}
+  end
+
+  def encrypt!(msg, key) do
+    with {:ok, ct} <- encrypt(msg, key) do
+      ct
+    else
+      {:error, message} ->
+        raise Apoc.Error, message: message
+    end
   end
 
   @doc """
@@ -84,8 +104,17 @@ defmodule Apoc.AES do
 
   defp do_encrypt(msg, aad, key) do
     iv = Apoc.rand_bytes(@iv_byte_size)
-    {ct, tag} = :crypto.block_encrypt(:aes_gcm, key, iv, {aad, msg})
-    Apoc.encode(aad <> iv <> tag <> ct)
+    try do
+      with {ct, tag} <- :crypto.block_encrypt(:aes_gcm, key, iv, {aad, msg}) do
+        {:ok, Apoc.encode(aad <> iv <> tag <> ct)}
+      end
+    rescue
+      err in ArgumentError ->
+        {:error, err.message}
+
+      err ->
+        {:error, inspect(err)}
+    end
   end
 
   defp do_decrypt(ct, aad, iv, tag, key) when is_valid_aad(aad) do

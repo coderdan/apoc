@@ -3,6 +3,8 @@ defmodule Apoc do
   Comprehensive docs coming soon!
   """
 
+  alias Apoc.Hazmat
+
   @typedoc """
   Hex (lowercase) encoded string
 
@@ -136,8 +138,9 @@ defmodule Apoc do
     :crypto.strong_rand_bytes(num)
   end
 
-  defdelegate encrypt(message, key), to: Apoc.AES
-  defdelegate decrypt(encrypted, key), to: Apoc.AES
+  # TODO: Test these
+  defdelegate encrypt(message, key), to: Hazmat.AEAD.AESGCM
+  defdelegate decrypt(encrypted, key), to: Hazmat.AEAD.AESGCM
 
   defdelegate sign(message, key, opts \\ []), to: Apoc.MAC.HMAC
   defdelegate verify(tag, message, key, opts \\ []), to: Apoc.MAC.HMAC
