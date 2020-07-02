@@ -1,9 +1,9 @@
 # Apoc
 
-![CircleCI](https://img.shields.io/circleci/project/github/coderdan/apoc.svg)
+[![CircleCI](https://img.shields.io/circleci/project/github/coderdan/apoc.svg)](https://circleci.com/gh/coderdan/apoc)
 ![Codecov](https://img.shields.io/codecov/c/github/coderdan/apoc.svg)
-![Hex.pm](https://img.shields.io/hexpm/dt/apoc.svg)
-![Hex.pm](https://img.shields.io/hexpm/v/apoc.svg)
+[![Hex.pm](https://img.shields.io/hexpm/dt/apoc.svg)](https://hex.pm/packages/apoc)
+[![Hex.pm](https://img.shields.io/hexpm/v/apoc.svg)](https://hex.pm/packages/apoc)
 [![Inline docs](http://inch-ci.org/github/coderdan/apoc.svg)](http://inch-ci.org/github/coderdan/apoc)
 
 
