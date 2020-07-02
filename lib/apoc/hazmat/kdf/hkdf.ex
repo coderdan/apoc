@@ -1,4 +1,4 @@
-defmodule Apoc.KDF.HKDF do
+defmodule Apoc.Hazmat.KDF.HKDF do
   @moduledoc """
   HKDF Key Derivation function described in
   [RFC5869](https://tools.ietf.org/html/rfc5869)

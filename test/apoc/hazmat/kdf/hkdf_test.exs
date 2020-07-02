@@ -1,10 +1,10 @@
-defmodule ApocTest.KDF.HKDFTest do
+defmodule ApocTest.Hazmat.KDF.HKDFTest do
   @moduledoc """
   The test vectors used in this test are
   defined in [RFC5869](https://tools.ietf.org/html/rfc5869)
   """
   use ApocTest.Case
-  alias Apoc.KDF.HKDF
+  alias Apoc.Hazmat.KDF.HKDF
   doctest HKDF
 
   describe "Derivation [Test Case 1]" do
