@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.0 [DRAFT]
+
+* Deprecated `Apoc.decode_hex/1` in favour of `Apoc.unhex/1` and `Apoc.unhex!/1`
+* Moved primitives to Hazmat module
+
 ## v0.2.0 2018-10-23
 
 * Implemented behaviour for Hash functions

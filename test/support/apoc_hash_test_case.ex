@@ -18,7 +18,7 @@ defmodule ApocTest.Hazmat.Hash.TestCase do
         property "`hash_hex` returns hex in an :ok tuple", %{target: target} do
           check all message <- message() do
             with {:ok, digest} <- target.hash_hex(message) do
-              assert Apoc.decode_hex(digest) == target.hash(message)
+              assert Apoc.unhex(digest) == target.hash(message)
             end
           end
         end

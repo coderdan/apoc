@@ -32,11 +32,38 @@ defmodule Apoc do
     Apoc.Hazmat.Hash.SHA256.hash_encode(message)
   end
 
-  # TODO: Spec (returns a tuple)
-  @doc "Decodes a URL safe base 64 string to binary"
+  @spec decode(encoded_string()) :: {:ok, binary()} | :error
+  @doc """
+  Decodes a URL safe base 64 string to binary, returning
+  a tuple of `{:ok, decoded_binary}` if successful or `:error` otherwise.
+
+  ## Examples
+
+      iex> Apoc.decode("AQIDBAU")
+      {:ok, <<1, 2, 3, 4, 5>>}
+
+      iex> Apoc.decode("^&%")
+      :error
+
+  """
   def decode(encoded) do
     Base.url_decode64(encoded, padding: false)
   end
+
+  @spec decode!(encoded_string()) :: binary()
+  @doc """
+  Similar to `decode/1` but returns the decoded binary directly
+  rather than a tuple. Raises an error if decoding fails.
+
+  ## Examples
+
+      iex> Apoc.decode!("AQIDBAU")
+      <<1, 2, 3, 4, 5>>
+
+      iex> Apoc.decode!("&^%")
+      ** (ArgumentError) non-alphabet digit found: "&" (byte 38)
+  
+  """
   def decode!(encoded) do
     Base.url_decode64!(encoded, padding: false)
   end
@@ -123,10 +150,49 @@ defmodule Apoc do
   See also `Base.encode16/2`
   """
   @spec hex(payload :: binary) :: hexstring()
-  def hex(payload) do
+  def hex(payload) when is_binary(payload) do
     Base.encode16(payload, case: :lower)
   end
 
+  @doc """
+  Decodes a hex encoded string into binary returning a tuple
+  if successful and `:error` if not.
+
+  See also `hex/1` and `unhex!/1`
+
+  ## Examples
+
+      iex> Apoc.unhex("0102030405")
+      {:ok, <<1, 2, 3, 4, 5>>}
+
+      iex> Apoc.unhex("XX")
+      :error
+
+  """
+  def unhex(hexstring) when is_binary(hexstring) do
+    Base.decode16(hexstring, case: :lower)
+  end
+
+  @doc """
+  Decodes a hex encoded string into binary and returns the result
+  directly. An error is raised if the string cannot be decoded.
+
+  See also `hex/1` and `unhex/1`
+
+  ## Examples
+
+      iex> Apoc.unhex!("0102030405")
+      <<1, 2, 3, 4, 5>>
+
+      iex> Apoc.unhex!("XX")
+      ** (ArgumentError) non-alphabet digit found: "X" (byte 88)
+
+  """
+  def unhex!(hexstring) when is_binary(hexstring) do
+    Base.decode16!(hexstring, case: :lower)
+  end
+
+  @deprecated "Use unhex/1 and unhex!/1 instead"
   def decode_hex(payload) do
     Base.decode16(payload, case: :lower)
   end
