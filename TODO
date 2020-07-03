@@ -1,1 +1,8 @@
+## Version 1.0
+
+- MAC Adapter with sensible interface
+- Tuple and bang versions of encode and decode
+- Defaults module for default adapters for core functions
 - Streaming hash and MAC functions (can we use Elixir Stream?)
+- Tests for main interface
+- Revised docs and doctests

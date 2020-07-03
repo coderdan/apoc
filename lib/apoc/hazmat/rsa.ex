@@ -1,4 +1,4 @@
-defmodule Apoc.RSA do
+defmodule Apoc.Hazmat.RSA do
   @moduledoc """
   RSA Public Key Cryptography with Elixir.
 
@@ -104,7 +104,7 @@ defmodule Apoc.RSA do
   and [public_key](http://erlang.org/doc/man/public_key.html).
   """
 
-  alias Apoc.RSA.{PrivateKey, PublicKey}
+  alias __MODULE__.{PrivateKey, PublicKey}
   @public_exponent 65537
 
   defguardp valid_mod?(size) when size in [2048, 3072, 4096]

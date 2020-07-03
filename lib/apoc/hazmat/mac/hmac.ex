@@ -1,4 +1,4 @@
-defmodule Apoc.MAC.HMAC do
+defmodule Apoc.Hazmat.MAC.HMAC do
   @moduledoc """
   Implementation of the HMAC construction
   as described in [FIPS PUB 198-1](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.198-1.pdf)

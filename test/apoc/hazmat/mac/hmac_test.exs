@@ -1,10 +1,10 @@
-defmodule ApocTest.MAC.HMACTest do
+defmodule ApocTest.Hazmat.MAC.HMACTest do
   @moduledoc """
   The test vectors used in this test are
   defined in [RFC4231](https://tools.ietf.org/html/rfc4231)
   """
   use ApocTest.Case
-  alias Apoc.MAC.HMAC
+  alias Apoc.Hazmat.MAC.HMAC
   doctest HMAC
 
   describe "signing message [Test Case 1]" do

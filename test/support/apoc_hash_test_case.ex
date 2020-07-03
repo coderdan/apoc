@@ -1,4 +1,4 @@
-defmodule ApocTest.Hash.TestCase do
+defmodule ApocTest.Hazmat.Hash.TestCase do
   use ExUnit.CaseTemplate
 
   using do

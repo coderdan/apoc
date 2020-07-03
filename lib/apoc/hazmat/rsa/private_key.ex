@@ -1,4 +1,4 @@
-defmodule Apoc.RSA.PrivateKey do
+defmodule Apoc.Hazmat.RSA.PrivateKey do
   @moduledoc """
   A Struct and set of functions to represent an RSA private key based
   on the underlying erlang representation.

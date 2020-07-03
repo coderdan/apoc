@@ -1,6 +1,6 @@
-defmodule ApocTest.RSA.PublicKeyTest do
+defmodule ApocTest.Hazmat.RSA.PublicKeyTest do
   use ApocTest.Case
-  alias Apoc.RSA.PublicKey
+  alias Apoc.Hazmat.RSA.PublicKey
   doctest PublicKey
 
   describe "Load a public key" do

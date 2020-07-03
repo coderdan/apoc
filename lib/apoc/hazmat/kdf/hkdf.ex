@@ -3,7 +3,7 @@ defmodule Apoc.Hazmat.KDF.HKDF do
   HKDF Key Derivation function described in
   [RFC5869](https://tools.ietf.org/html/rfc5869)
   """
-  alias Apoc.MAC.HMAC
+  alias Apoc.Hazmat.MAC.HMAC
 
   @doc """
   Derives a key using HKDF

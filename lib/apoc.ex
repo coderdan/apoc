@@ -28,7 +28,8 @@ defmodule Apoc do
   """
   @spec hash(message :: binary) :: {:ok, hexstring} | :error
   def hash(message) do
-    Apoc.Hash.hash_encode(message)
+    # TODO: Use a "defaults" module
+    Apoc.Hazmat.Hash.SHA256.hash_encode(message)
   end
 
   # TODO: Spec (returns a tuple)
@@ -142,8 +143,8 @@ defmodule Apoc do
   defdelegate encrypt(message, key), to: Hazmat.AEAD.AESGCM
   defdelegate decrypt(encrypted, key), to: Hazmat.AEAD.AESGCM
 
-  defdelegate sign(message, key, opts \\ []), to: Apoc.MAC.HMAC
-  defdelegate verify(tag, message, key, opts \\ []), to: Apoc.MAC.HMAC
+  defdelegate sign(message, key, opts \\ []), to: Hazmat.MAC.HMAC
+  defdelegate verify(tag, message, key, opts \\ []), to: Hazmat.MAC.HMAC
 
   @doc """
   Compares to bitlists for equality in constant time
