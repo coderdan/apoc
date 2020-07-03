@@ -1,4 +1,4 @@
-defmodule Apoc.RSA.PublicKey do
+defmodule Apoc.Hazmat.RSA.PublicKey do
   @moduledoc """
   Struct and set of functions for working with an RSA public key
 

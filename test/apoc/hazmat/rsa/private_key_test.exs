@@ -1,6 +1,6 @@
-defmodule ApocTest.RSA.PrivateKeyTest do
+defmodule ApocTest.Hazmat.RSA.PrivateKeyTest do
   use ApocTest.Case
-  alias Apoc.RSA.PrivateKey
+  alias Apoc.Hazmat.RSA.PrivateKey
   doctest PrivateKey
 
   describe "Load a public key" do
@@ -29,7 +29,7 @@ defmodule ApocTest.RSA.PrivateKeyTest do
     end
 
     test "dumping a self generated key works" do
-      {:ok, _, skey} = Apoc.RSA.generate_key_pair
+      {:ok, _, skey} = Apoc.Hazmat.RSA.generate_key_pair
       assert PrivateKey.dump_pem(skey)
     end
   end

@@ -1,7 +1,7 @@
-defmodule ApocTest.RSATest do
+defmodule ApocTest.Hazmat.RSATest do
   use ApocTest.Case
-  alias Apoc.RSA
-  alias Apoc.RSA.{PrivateKey, PublicKey}
+  alias Apoc.Hazmat.RSA
+  alias Apoc.Hazmat.RSA.{PrivateKey, PublicKey}
   doctest RSA
 
   describe "Public encryption" do
@@ -9,7 +9,7 @@ defmodule ApocTest.RSATest do
 
     test "encrypts a plaintext", %{pkey: pkey} do
       message = "a secret message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(pkey, message)
+      {:ok, ciphertext} = RSA.encrypt(pkey, message)
       assert byte_size(ciphertext) == 342
       assert ciphertext != message
     end
@@ -20,7 +20,7 @@ defmodule ApocTest.RSATest do
 
     test "encrypts a plaintext", %{skey: skey} do
       message = "a secret message!"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(skey, message)
+      {:ok, ciphertext} = RSA.encrypt(skey, message)
       assert byte_size(ciphertext) == 342
       assert ciphertext != message
     end
@@ -31,22 +31,22 @@ defmodule ApocTest.RSATest do
 
     test "that the public key decrypts the privately encrypted ciphertext", %{pkey: pkey, skey: skey} do
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(skey, message)
-      assert match?({:ok, ^message}, Apoc.RSA.decrypt(pkey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(skey, message)
+      assert match?({:ok, ^message}, RSA.decrypt(pkey, ciphertext))
     end
 
     test "that the private key CANNOT decrypt the privately encrypted ciphertext", %{skey: skey} do
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(skey, message)
-      assert match?(:error, Apoc.RSA.decrypt(skey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(skey, message)
+      assert match?(:error, RSA.decrypt(skey, ciphertext))
     end
 
     test "that a different public key CANNOT decrypt the ciphertext", %{skey: skey} do
-      {:ok, wrong_pkey, _} = Apoc.RSA.generate_key_pair()
+      {:ok, wrong_pkey, _} = RSA.generate_key_pair()
 
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(skey, message)
-      assert match?(:error, Apoc.RSA.decrypt(wrong_pkey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(skey, message)
+      assert match?(:error, RSA.decrypt(wrong_pkey, ciphertext))
     end
   end
 
@@ -55,42 +55,42 @@ defmodule ApocTest.RSATest do
 
     test "that the private key decrypts the publicly encrypted ciphertext", %{pkey: pkey, skey: skey} do
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(pkey, message)
-      assert match?({:ok, ^message}, Apoc.RSA.decrypt(skey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(pkey, message)
+      assert match?({:ok, ^message}, RSA.decrypt(skey, ciphertext))
     end
 
     test "that the public key CANNOT decrypt the publicly encrypted ciphertext", %{pkey: pkey} do
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(pkey, message)
-      assert match?(:error, Apoc.RSA.decrypt(pkey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(pkey, message)
+      assert match?(:error, RSA.decrypt(pkey, ciphertext))
     end
 
     test "that a different private key CANNOT decrypt the ciphertext", %{pkey: pkey} do
-      {:ok, _, wrong_skey} = Apoc.RSA.generate_key_pair()
+      {:ok, _, wrong_skey} = RSA.generate_key_pair()
 
       message = "another message"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(pkey, message)
-      assert match?(:error, Apoc.RSA.decrypt(wrong_skey, ciphertext))
+      {:ok, ciphertext} = RSA.encrypt(pkey, message)
+      assert match?(:error, RSA.decrypt(wrong_skey, ciphertext))
     end
   end
 
   describe "Key generation" do
     test "that a newly generated key pair works correctly for public -> private" do
-      {:ok, pkey, skey} = Apoc.RSA.generate_key_pair()
+      {:ok, pkey, skey} = RSA.generate_key_pair()
 
       message = "messages are fun"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(pkey, message)
+      {:ok, ciphertext} = RSA.encrypt(pkey, message)
       assert ciphertext != message
-      assert match?({:ok, ^message}, Apoc.RSA.decrypt(skey, ciphertext))
+      assert match?({:ok, ^message}, RSA.decrypt(skey, ciphertext))
     end
 
     test "that a newly generated key pair works correctly for private -> public" do
-      {:ok, pkey, skey} = Apoc.RSA.generate_key_pair()
+      {:ok, pkey, skey} = RSA.generate_key_pair()
 
       message = "messages are *really* fun"
-      {:ok, ciphertext} = Apoc.RSA.encrypt(skey, message)
+      {:ok, ciphertext} = RSA.encrypt(skey, message)
       assert ciphertext != message
-      assert match?({:ok, ^message}, Apoc.RSA.decrypt(pkey, ciphertext))
+      assert match?({:ok, ^message}, RSA.decrypt(pkey, ciphertext))
     end
   end
 
