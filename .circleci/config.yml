@@ -22,8 +22,7 @@ jobs:
       - run:
           name: Running Inch CI documentation tests
           command: |
-            MIX_ENV=docs mix deps.get
-            MIX_ENV=docs mix inch.report
+            mix inch.report
       - run:
           name: Upload Code Coverage
           command: |
