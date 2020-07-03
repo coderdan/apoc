@@ -10,3 +10,6 @@
 
 - Handle Blake3
 - Handle SHA3 and Blake2
+- Dialixyr
+- Key generate functions for minimal entropy (e.g. 2^64)
+- Full PKCS suite

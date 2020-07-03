@@ -4,6 +4,7 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
   defined in [RFC5869](https://tools.ietf.org/html/rfc5869)
   """
   use ApocTest.Case
+  use ExUnitProperties
   alias Apoc.Hazmat.KDF.HKDF
   doctest HKDF
 
@@ -17,17 +18,11 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
       }
     end
 
-    test "key is derived correctly", %{secret: secret, salt: salt, info: info, length: len} do
-      output = 
-        secret
-        |> HKDF.derive(salt, info: info, length: len)
-        |> Apoc.hex
-
-      assert output == block_str """
-      3cb25f25faacd57a90434f64d0362f2a
-      2d2d0a90cf1a5a4c5db02d56ecc4c5bf
-      34007208d5b887185865
-      """
+    # NOTE: Even though the RFC provides valid test cases for a missing salt
+    # we take a more conservative approach for Apoc where Salt is mandatory
+    # and at least 32 bytes
+    test "key derivation fails", %{secret: secret, salt: salt, info: info, length: len} do
+      assert match?({:error, "Salt must be >= 32 bytes"}, HKDF.derive(secret, salt, info: info, length: len))
     end
   end
 
@@ -61,9 +56,9 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
 
     test "key is derived correctly", %{secret: secret, salt: salt, info: info, length: len} do
       output = 
-        secret
-        |> HKDF.derive(salt, info: info, length: len)
-        |> Apoc.hex
+        with {:ok, key} <- HKDF.derive(secret, salt, info: info, length: len) do
+          Apoc.hex(key)
+        end
 
       assert output == block_str """
       b11e398dc80327a1c8e7f78c596a4934
@@ -86,17 +81,33 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
       }
     end
 
-    test "key is derived correctly", %{secret: secret, salt: salt, info: info, length: len} do
-      output = 
-        secret
-        |> HKDF.derive(salt, info: info, length: len)
-        |> Apoc.hex
+    # NOTE: Even though the RFC provides valid test cases for a missing salt
+    # we take a more conservative approach for Apoc where Salt is mandatory
+    # and at least 32 bytes
+    test "key derivation fails", %{secret: secret, salt: salt, info: info, length: len} do
+      assert match?({:error, _}, HKDF.derive(secret, salt, info: info, length: len))
+    end
+  end
 
-      assert output == block_str """
-      8da4e775a563c18f715f802a063c5a31
-      b8a11f5c5ee1879ec3454e5f3c738d2d
-      9d201395faa4b61a96c8
-      """
+  describe "Length checks" do
+    setup do
+      [secret: "password1sosecure", salt: Apoc.rand_bytes(32)]
+    end
+
+    test "that keys longer than 255 bytes fail to generate", %{secret: secret, salt: salt} do
+      assert match?({:error, _}, HKDF.derive(secret, salt, length: 256))
+    end
+
+    test "that keys shorter than 8 bytes fail to generate", %{secret: secret, salt: salt} do
+      assert match?({:error, _}, HKDF.derive(secret, salt, length: 7))
+    end
+
+    property "key length is correct", %{secret: secret, salt: salt} do
+      check all length <- StreamData.integer(8..255) do
+        with {:ok, key} <- HKDF.derive(secret, salt, length: length) do
+          assert byte_size(key) == length
+        end
+      end
     end
   end
 end

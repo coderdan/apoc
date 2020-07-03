@@ -62,7 +62,7 @@ defmodule Apoc do
 
       iex> Apoc.decode!("&^%")
       ** (ArgumentError) non-alphabet digit found: "&" (byte 38)
-  
+
   """
   def decode!(encoded) do
     Base.url_decode64!(encoded, padding: false)
@@ -209,16 +209,109 @@ defmodule Apoc do
   defdelegate encrypt(message, key), to: Hazmat.AEAD.AESGCM
   defdelegate decrypt(encrypted, key), to: Hazmat.AEAD.AESGCM
 
-  defdelegate sign(message, key, opts \\ []), to: Hazmat.MAC.HMAC
-  defdelegate verify(tag, message, key, opts \\ []), to: Hazmat.MAC.HMAC
+  @doc """
+  Signs a message with the given key by generating a Message Authenticated Code (MAC),
+  often referred to as a tag. A tuple of the form `{:ok, tag}`, with the
+  tag encoded as per `Apoc.encode/1` or `:error` otherwise.
+
+  The default MAC adapter is `Apoc.Hazmat.MAC.HMAC256`. See also `Apoc.Adapters.MAC`.
+
+  ## Examples
+
+      iex> Apoc.sign("hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      {:ok, "tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4"}
+
+      iex> Apoc.sign("hello", <<0>>)
+      {:error, "Invalid key size"}
+
+  """
+  @spec sign(message :: binary(), key :: binary(), opts :: list()) :: {:ok, binary()} | :error
+  def sign(message, key, opts \\ []) do
+    with {:ok, binary_tag} <- Hazmat.MAC.HMAC256.sign(message, key, opts) do
+      {:ok, Apoc.encode(binary_tag)}
+    end
+  end
 
   @doc """
-  Compares to bitlists for equality in constant time
+  Similar to `Apoc.sign/3` but returns the tag directly if succesful (instead of a tuple)
+  and raises `Apoc.Error` in the case of an error.
+
+  ## Examples
+
+      iex> Apoc.sign!("hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      "tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4"
+
+      iex> Apoc.sign!("hello", <<0>>)
+      ** (Apoc.Error) Invalid key size
+
+  """
+  @spec sign!(message :: binary(), key :: binary(), opts :: list()) :: binary()
+  def sign!(message, key, opts \\ []) do
+    message
+    |> Hazmat.MAC.HMAC256.sign!(key, opts)
+    |> Apoc.encode()
+  end
+
+
+  @doc """
+  Verifies a message given the tag encoded by `Apoc.encode/1` or by a 3rd party in
+  Base64 encoding. If you are verifying tags with other encodings you should use one of the
+  modules in `Apoc.Hazmat.MAC`.
+
+  If verification is successful, a tuple of the form `{:ok, message}` is returned or `:error`
+  otherwise.
+
+  See also `Apoc.sign/3`.
+
+  ## Examples
+
+      iex> Apoc.verify("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      {:ok, "hello"}
+
+      iex> Apoc.verify("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello-tamper", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      :error
+
+  """
+  # TODO: Make a type for base64 encoded string
+  # TODO: Should message be iodata ?
+  @spec verify(tag :: binary(), message :: binary(), key :: binary(), opts :: list()) :: {:ok, binary()} | :error
+  def verify(tag, message, key, opts \\ []) do
+    with {:ok, binary} <- Apoc.decode(tag) do
+      Hazmat.MAC.HMAC256.verify(binary, message, key, opts)
+    end
+  end
+
+  @doc """
+  Similar to `Apoc.verify/4` except that it just returns true if the message
+  is verified or false otherwise.
+
+  ## Examples
+
+      iex> Apoc.verify!("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      true
+
+      iex> Apoc.verify!("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello-tamper", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      false
+
+  """
+  def verify!(tag, message, key, opts \\ []) do
+    with {:ok, binary} <- Apoc.decode(tag),
+         {:ok, _} <- Hazmat.MAC.HMAC256.verify(binary, message, key, opts) do
+      true
+    else
+      :error ->
+        false
+    end
+  end
+
+  @doc """
+  Compares two bitlists for equality in constant time
   to avoid timing attacks.
 
   See https://codahale.com/a-lesson-in-timing-attacks/
   and `Plug.Crypto`.
   """
+  # TODO: Move to Util?
   def secure_compare(left, right) do
     if byte_size(left) == byte_size(right) do
       secure_compare(left, right, 0) == 0
