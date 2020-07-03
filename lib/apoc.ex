@@ -28,7 +28,8 @@ defmodule Apoc do
   """
   @spec hash(message :: binary) :: {:ok, hexstring} | :error
   def hash(message) do
-    Apoc.Hash.hash_encode(message)
+    # TODO: Use a "defaults" module
+    Apoc.Hazmat.Hash.SHA256.hash_encode(message)
   end
 
   # TODO: Spec (returns a tuple)

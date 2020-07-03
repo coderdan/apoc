@@ -1,4 +1,4 @@
-defmodule Apoc.Hash do
+defmodule Apoc.Adapter.Hash do
   @moduledoc """
   Behaviour and functions for hashing messages.
 
@@ -130,6 +130,14 @@ defmodule Apoc.Hash do
       def hash_encode(message) do
         with {:ok, hash} <- hash(message),
           do: {:ok, Apoc.encode(hash)}
+      end
+
+      def hash(message) do
+        try do
+          {:ok, hash!(message)}
+        rescue
+          _ -> :error
+        end
       end
     end
   end
