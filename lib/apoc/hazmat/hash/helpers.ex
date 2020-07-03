@@ -1,4 +1,4 @@
-defmodule Apoc.Hash.Helpers do
+defmodule Apoc.Hazmat.Hash.Helpers do
   @moduledoc false
 
   defmacro __using__(_) do

@@ -1,6 +1,6 @@
-defmodule Apoc.Hash.SHA384 do
+defmodule Apoc.Hazmat.Hash.SHA384 do
   use Apoc.Hash
-  use Apoc.Hash.Helpers
+  use Apoc.Hazmat.Hash.Helpers
 
   def hash!(message) do
     :crypto.hash(:sha384, message)

@@ -91,7 +91,7 @@ defmodule Apoc.Hash do
   ```
   """
 
-  @default Apoc.Hash.SHA256
+  @default Apoc.Hazmat.Hash.SHA256
 
   @doc """
   Generate a hash for the given message
@@ -121,12 +121,12 @@ defmodule Apoc.Hash do
   defmacro __using__(_) do
     quote do
       @behaviour unquote(__MODULE__)
-
+  
       def hash_hex(message) do
         with {:ok, hash} <- hash(message),
           do: {:ok, Apoc.hex(hash)}
       end
-
+  
       def hash_encode(message) do
         with {:ok, hash} <- hash(message),
           do: {:ok, Apoc.encode(hash)}
