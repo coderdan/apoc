@@ -1,7 +1,6 @@
 ## Version 1.0
 
 - Defaults module for default adapters for core functions
-- Streaming hash and MAC functions (can we use Elixir Stream?)
 - Tests for main interface
 - Revised docs and doctests
 
@@ -11,6 +10,7 @@
 - Handle SHA3 and Blake2
 - Check `:crypto.supports/1` where appropriate
 - Dialixyr
+- Streaming hash and MAC functions (can we use Elixir Stream?)
 - Key generate functions for minimal entropy (e.g. 2^64)
 - Key rotation helpers (maybe AEAD should have key IDs)
 - Full PKCS suite
