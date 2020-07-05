@@ -123,13 +123,15 @@ defmodule Apoc.Adapter.Hash do
       @behaviour unquote(__MODULE__)
   
       def hash_hex(message) do
-        with {:ok, hash} <- hash(message),
-          do: {:ok, Apoc.hex(hash)}
+        with {:ok, hash} <- hash(message) do
+          {:ok, Apoc.hex(hash)}
+        end
       end
   
       def hash_encode(message) do
-        with {:ok, hash} <- hash(message),
-          do: {:ok, Apoc.encode(hash)}
+        with {:ok, hash} <- hash(message) do
+          {:ok, Apoc.encode(hash)}
+        end
       end
 
       def hash(message) do
