@@ -96,7 +96,7 @@ defmodule Apoc.Hazmat.AEAD.AESGCM do
   {:ok, plaintext} = Apoc.AES.decrypt(ciphertext, key)
   ```
   """
-  @spec decrypt(String.t, aes_key) :: {:ok, binary} | :error
+  @spec decrypt(String.t, aes_key) :: binary
   def decrypt(payload, key) do
     {:ok, <<aad::binary-9, iv::binary-16, tag::binary-16, ct::binary>>} = Apoc.decode(payload)
     do_decrypt(ct, aad, iv, tag, key)

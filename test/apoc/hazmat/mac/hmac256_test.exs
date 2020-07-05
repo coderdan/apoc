@@ -42,10 +42,7 @@ defmodule ApocTest.Hazmat.MAC.HMACTest do
       check all message <- message() do
         {:ok, tag} = HMAC.sign(message, key)
 
-        assert match?(
-          {:ok, ^message},
-          HMAC.verify(tag, message, key)
-        )
+        assert HMAC.verify(tag, message, key)
       end
     end
 
@@ -53,10 +50,7 @@ defmodule ApocTest.Hazmat.MAC.HMACTest do
       check all message <- message() do
         {:ok, tag} = HMAC.sign(message, key)
 
-        assert match?(
-          :error,
-          HMAC.verify(tag, message <> "tampering", key)
-        )
+        refute HMAC.verify(tag, message <> "tampering", key)
       end
     end
 
@@ -64,10 +58,7 @@ defmodule ApocTest.Hazmat.MAC.HMACTest do
       check all message <- message() do
         {:ok, tag} = HMAC.sign(message, key)
 
-        assert match?(
-          :error,
-          HMAC.verify(tag, message, Apoc.rand_bytes(32))
-        )
+        refute HMAC.verify(tag, message, Apoc.rand_bytes(32))
       end
     end
   end

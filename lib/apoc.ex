@@ -258,49 +258,25 @@ defmodule Apoc do
   Base64 encoding. If you are verifying tags with other encodings you should use one of the
   modules in `Apoc.Hazmat.MAC`.
 
-  If verification is successful, a tuple of the form `{:ok, message}` is returned or `:error`
-  otherwise.
+  Returns `true` if verification is successful, and `false` otherwise.
 
   See also `Apoc.sign/3`.
 
   ## Examples
 
-      iex> Apoc.verify("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
-      {:ok, "hello"}
-
-      iex> Apoc.verify("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello-tamper", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
-      :error
-
-  """
-  # TODO: Make a type for base64 encoded string
-  # TODO: Should message be iodata ?
-  @spec verify(tag :: binary(), message :: binary(), key :: binary(), opts :: list()) :: {:ok, binary()} | :error
-  def verify(tag, message, key, opts \\ []) do
-    with {:ok, binary} <- Apoc.decode(tag) do
-      Hazmat.MAC.HMAC256.verify(binary, message, key, opts)
-    end
-  end
-
-  @doc """
-  Similar to `Apoc.verify/4` except that it just returns true if the message
-  is verified or false otherwise.
-
-  ## Examples
-
-      iex> Apoc.verify!("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      iex> "tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4"
+      ...> |> Apoc.verify("hello", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
       true
 
-      iex> Apoc.verify!("tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4", "hello-tamper", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
+      iex> "tP6Nlf174bt05APQxaqXQTnyO-tOpvTJV2WPcD_rej4"
+      ...> |> Apoc.verify("hello-tamper", Apoc.decode!("0Eqm2Go54JdQPIjS3FkQaSEy1Z-W22eRVRoBNrvp4ok"))
       false
 
   """
-  def verify!(tag, message, key, opts \\ []) do
-    with {:ok, binary} <- Apoc.decode(tag),
-         {:ok, _} <- Hazmat.MAC.HMAC256.verify(binary, message, key, opts) do
-      true
-    else
-      :error ->
-        false
+  @spec verify(tag :: encoded_string(), message :: iodata(), key :: Apoc.Adapter.MAC.key(), opts :: Keyword.t()) :: true | false
+  def verify(tag, message, key, opts \\ []) do
+    with {:ok, binary} <- Apoc.decode(tag) do
+      Hazmat.MAC.HMAC256.verify(binary, message, key, opts)
     end
   end
 

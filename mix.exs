@@ -21,7 +21,7 @@ defmodule Apoc.Mixfile do
         source_ref: "v#{@version}",
         canonical: "http://hexdocs.pm/apoc",
         source_url: "https://github.com/coderdan/apoc",
-        extras: [], # TODO: Some Guides?
+        extras: [],
         groups_for_modules: module_groups()
       ],
     ]
@@ -46,6 +46,7 @@ defmodule Apoc.Mixfile do
   defp deps do
     [
       {:ex_doc, "~> 0.22.1", only: :dev},
+      {:ex_todo, "~> 0.1.0", only: :dev},
       {:excoveralls, "~> 0.9.1", only: :test},
       {:inch_ex, "~> 2.0.0", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},

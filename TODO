@@ -10,6 +10,9 @@
 
 - Handle Blake3
 - Handle SHA3 and Blake2
+- Check `:crypto.supports/1` where appropriate
 - Dialixyr
 - Key generate functions for minimal entropy (e.g. 2^64)
+- Key rotation helpers (maybe AEAD should have key IDs)
 - Full PKCS suite
+- Enable FIPS mode (mirroring the erlang FIPS mode - see https://erlang.org/doc/apps/crypto/fips.html)

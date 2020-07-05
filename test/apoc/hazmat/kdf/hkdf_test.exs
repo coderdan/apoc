@@ -18,7 +18,7 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
       }
     end
 
-    # NOTE: Even though the RFC provides valid test cases for a missing salt
+    # Even though the RFC provides valid test cases for a missing salt
     # we take a more conservative approach for Apoc where Salt is mandatory
     # and at least 32 bytes
     test "key derivation fails", %{secret: secret, salt: salt, info: info, length: len} do
@@ -81,7 +81,7 @@ defmodule ApocTest.Hazmat.KDF.HKDFTest do
       }
     end
 
-    # NOTE: Even though the RFC provides valid test cases for a missing salt
+    # Even though the RFC provides valid test cases for a missing salt
     # we take a more conservative approach for Apoc where Salt is mandatory
     # and at least 32 bytes
     test "key derivation fails", %{secret: secret, salt: salt, info: info, length: len} do
