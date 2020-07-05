@@ -1,6 +1,5 @@
 ## Version 1.0
 
-- MAC Adapter with sensible interface
 - Defaults module for default adapters for core functions
 - Streaming hash and MAC functions (can we use Elixir Stream?)
 - Tests for main interface
