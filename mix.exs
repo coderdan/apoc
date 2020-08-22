@@ -9,6 +9,11 @@ defmodule Apoc.Mixfile do
       version: @version,
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
+      dialyzer: [
+        plt_add_deps: :apps_direct,
+        plt_add_apps: [:crypto, :public_key],
+        flags: [:unmatched_returns, :error_handling, :race_conditions, :no_opaque],
+      ],
       start_permanent: Mix.env == :prod,
       deps: deps(),
       package: package(),
@@ -49,7 +54,7 @@ defmodule Apoc.Mixfile do
       {:ex_todo, "~> 0.1.0", only: :dev},
       {:excoveralls, "~> 0.9.1", only: :test},
       {:inch_ex, "~> 2.0.0", only: [:dev, :test]},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:stream_data, "~> 0.4.2", only: :test},
     ]
   end

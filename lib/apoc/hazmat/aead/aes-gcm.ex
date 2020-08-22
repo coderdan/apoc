@@ -12,7 +12,7 @@ defmodule Apoc.Hazmat.AEAD.AESGCM do
   Use a 32 byte key for a 256 bit block size. See `encrypt/2`.
   """
 
-  @type aes_key() :: <<_::16, _::_* 8>> | <<_::24, _::_* 8>> | <<_::32, _::_* 8>>
+  @type aes_key() :: <<_::16, _::_*8>> | <<_::24, _::_*8>> | <<_::32, _::_*8>>
 
   @iv_byte_size 16
 
@@ -57,7 +57,7 @@ defmodule Apoc.Hazmat.AEAD.AESGCM do
   ```
   """
   # TODO: Optional additional AD
-  @spec encrypt(String.t, aes_key) :: binary
+  @spec encrypt(String.t(), aes_key()) :: {:ok, binary()} | {:error, binary()}
   def encrypt(msg, key) when is_binary(msg) and is_key_of_size(key, 16) do
     do_encrypt(msg, "AES128GCM", key)
   end
@@ -96,14 +96,17 @@ defmodule Apoc.Hazmat.AEAD.AESGCM do
   {:ok, plaintext} = Apoc.AES.decrypt(ciphertext, key)
   ```
   """
-  @spec decrypt(String.t, aes_key) :: binary
+  @spec decrypt(String.t(), aes_key) :: {:ok, binary} | {:error, String.t()}
   def decrypt(payload, key) do
-    {:ok, <<aad::binary-9, iv::binary-16, tag::binary-16, ct::binary>>} = Apoc.decode(payload)
-    do_decrypt(ct, aad, iv, tag, key)
+    with {:ok, <<aad::binary-9, iv::binary-16, tag::binary-16, ct::binary>>} <-
+           Apoc.decode(payload) do
+      do_decrypt(ct, aad, iv, tag, key)
+    end
   end
 
   defp do_encrypt(msg, aad, key) do
     iv = Apoc.rand_bytes(@iv_byte_size)
+
     try do
       with {ct, tag} <- :crypto.block_encrypt(:aes_gcm, key, iv, {aad, msg}) do
         {:ok, Apoc.encode(aad <> iv <> tag <> ct)}
