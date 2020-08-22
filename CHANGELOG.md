@@ -1,9 +1,11 @@
 # Changelog
 
-## v1.0.0 [DRAFT]
+## v1.0.0-rc1
 
 * Deprecated `Apoc.decode_hex/1` in favour of `Apoc.unhex/1` and `Apoc.unhex!/1`
 * Moved primitives to Hazmat module
+* Added Dialyzer static analysis
+* Improved tests and better coverage
 
 ## v0.2.0 2018-10-23
 
