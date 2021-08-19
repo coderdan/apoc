@@ -1,8 +1,4 @@
 defmodule Apoc do
-  @moduledoc """
-  Comprehensive docs coming soon!
-  """
-
   alias Apoc.Hazmat
 
   @typedoc """
